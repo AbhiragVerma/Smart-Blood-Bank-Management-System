@@ -17,6 +17,7 @@
 #include "pcb.h"
 #include "blood.h"
 #include "scheduler.h"
+#include "logger.h"
 
 #define MAX_SLOTS (MAX_PROCESSES * 2)
 
@@ -167,17 +168,37 @@ int scheduler_run(int commit) {
         left--;
 
         if (commit) {
-            set_state(p, RUNNING);
-            if (!allocate_blood(p->blood_group, p->units)) {
-                set_state(p, WAITING);
-                printf("        Reason: RESOURCE_UNAVAILABLE (%s x %d units)\n",
-                       p->blood_group, p->units);
-                n_waiting++;
-                continue;
-            }
-            printf("        %d unit(s) of %s allocated to P%d\n",
-                   p->units, p->blood_group, p->pid);
-        }
+
+    /* Log READY -> RUNNING */
+    log_state_change(
+        p->pid,
+        state_name(p->state),
+        "RUNNING"
+    );
+
+    set_state(p, RUNNING);
+
+    if (!allocate_blood(p->blood_group, p->units)) {
+
+        /* Log RUNNING -> WAITING */
+        log_state_change(
+            p->pid,
+            state_name(p->state),
+            "WAITING"
+        );
+
+        set_state(p, WAITING);
+
+        printf("        Reason: RESOURCE_UNAVAILABLE (%s x %d units)\n",
+               p->blood_group, p->units);
+
+        n_waiting++;
+        continue;
+    }
+
+    printf("        %d unit(s) of %s allocated to P%d\n",
+           p->units, p->blood_group, p->pid);
+}
 
         p->start_time      = clock;
         clock             += p->burst_time;
@@ -192,7 +213,16 @@ int scheduler_run(int commit) {
         n_slots++;
         done[n_done++] = p;
 
-        if (commit) set_state(p, TERMINATED);
+        if (commit) {
+
+    log_state_change(
+        p->pid,
+        state_name(p->state),
+        "TERMINATED"
+    );
+
+    set_state(p, TERMINATED);
+}
     }
 
     if (n_done > 0) {

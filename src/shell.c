@@ -1,10 +1,13 @@
 #include <stdio.h>
 #include <string.h>
+#include <strings.h>
 #include <stdlib.h>
 
 #include "pcb.h"
 #include "blood.h"
 #include "scheduler.h"
+#include "logger.h"
+
 
 /*
  * process.c will provide this function.
@@ -34,18 +37,32 @@ static Priority parse_priority(const char *text)
 }
 
 
+/* -------------------------------------------------
+ * HELP command
+ * ------------------------------------------------- */
+
 static void print_help(void)
 {
     printf("\n");
     printf("========== RaktSetu Commands ==========\n");
+
     printf("help                         Show commands\n");
+
     printf("request <patient> <group> <units> <priority>\n");
     printf("                             Create blood request\n");
+
     printf("ps                           Show process table\n");
+
     printf("blood                        Show blood inventory\n");
+
     printf("schedule <fcfs|priority>     Select scheduler\n");
+
     printf("run                          Execute READY processes\n");
+
+    printf("logs                         Show process state logs\n");
+
     printf("exit                         Exit program\n");
+
     printf("========================================\n");
 }
 
@@ -120,6 +137,7 @@ static void handle_request(char *args)
         printf("request <patient> <group> <units> <priority>\n");
         printf("Example:\n");
         printf("request Rahul O- 2 critical\n");
+
         return;
     }
 
@@ -143,6 +161,7 @@ static void handle_request(char *args)
     }
 
     printf("\nBlood request created successfully.\n");
+
     printf("PID      : %d\n", pid);
     printf("Patient  : %s\n", patient);
     printf("Group    : %s\n", group);
@@ -160,10 +179,13 @@ static void handle_schedule(char *args)
     SchedAlgo algorithm;
 
     if (scheduler_parse(args, &algorithm) != 0) {
+
         printf("Unknown scheduling algorithm.\n");
+
         printf("Available algorithms:\n");
         printf("  fcfs\n");
         printf("  priority\n");
+
         return;
     }
 
@@ -186,6 +208,16 @@ static void handle_run(void)
 
     printf("\nScheduler finished.\n");
     printf("Processes executed: %d\n", executed);
+}
+
+
+/* -------------------------------------------------
+ * LOGS command
+ * ------------------------------------------------- */
+
+static void handle_logs(void)
+{
+    show_logs();
 }
 
 
@@ -241,7 +273,9 @@ int main(void)
         else if (strcmp(input, "blood") == 0) {
 
             printf("\n========== BLOOD INVENTORY ==========\n");
+
             print_inventory();
+
             printf("=====================================\n");
         }
 
@@ -254,11 +288,20 @@ int main(void)
         }
 
 
+        /* ---------------- LOGS ---------------- */
+
+        else if (strcmp(input, "logs") == 0) {
+
+            handle_logs();
+        }
+
+
         /* ---------------- EXIT ---------------- */
 
         else if (strcmp(input, "exit") == 0) {
 
             printf("Shutting down RaktSetu prototype...\n");
+
             break;
         }
 
