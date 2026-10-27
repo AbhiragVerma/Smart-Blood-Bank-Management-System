@@ -223,6 +223,8 @@ static void execute_command(void)
 {
     input[input_length] = '\0';
 
+
+
     if (equals(input, "help")) {
         show_help();
     } else if (equals(input, "clear")) {
@@ -289,13 +291,17 @@ void kernel_main(void)
             continue;
         }
 
-        char c = scancode_to_ascii(code);
-        if (c == 0) {
+        /* Handle spacebar explicitly and store it in the command. */
+        if (code == 0x39) {
+            if (input_length < INPUT_SIZE - 1) {
+                input[input_length++] = ' ';
+                put_char(' ');
+            }
             continue;
         }
 
-        if (code == 0x39) {
-            put_char('_');
+        char c = scancode_to_ascii(code);
+        if (c == 0) {
             continue;
         }
 
