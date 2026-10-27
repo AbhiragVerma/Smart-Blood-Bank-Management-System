@@ -15,6 +15,7 @@
 #include "virtual_memory.h"
 #include "file_allocation.h"
 #include "disk_scheduling.h"
+#include "bankers.h"
 
 
 /* -------------------------------------------------
@@ -111,6 +112,8 @@ static void print_help(void)
     printf("memfit                       Compare First/Best/Worst Fit\n");
     printf("memfixed                     Demonstrate fixed partitions\n");
     printf("paging                       Demonstrate paging\n");
+    printf("pagingcompare                Compare FIFO and LRU page faults\n");
+    printf("bankers                      Run Banker's Algorithm safety demo\n");
     printf("segmentation                 Demonstrate segmentation\n");
     printf("segpaging                    Demonstrate segmented paging\n");
     printf("demandpaging                 Demonstrate demand paging\n");
@@ -355,6 +358,14 @@ int main(void)
         else if (strcmp(input, "lru") == 0)
         {
             lru_demo();
+        }
+        else if (strcmp(input, "pagingcompare") == 0)
+        {
+            paging_compare_demo();
+        }
+        else if (strcmp(input, "bankers") == 0)
+        {
+            bankers_demo();
         }
         else if (strcmp(input, "optimal") == 0)
         {

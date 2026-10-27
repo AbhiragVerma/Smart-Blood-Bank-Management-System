@@ -4,7 +4,6 @@ CFLAGS = -Wall -Wextra -std=c99 -Iinclude
 LDFLAGS = -pthread
 TARGET = raktsetu
 
-
 SRC = src/shell.c \
       src/process.c \
       src/states.c \
@@ -26,6 +25,7 @@ SRC = src/shell.c \
       src/memory.c \
       src/paging.c \
       src/virtual_memory.c \
+      src/bankers.c \
       src/file_allocation.c \
       src/mlq_scheduler.c \
       src/disk_scheduling.c
@@ -40,3 +40,5 @@ $(TARGET): $(OBJ)
 
 clean:
 	rm -f $(OBJ) $(TARGET)
+
+.PHONY: clean

@@ -9,5 +9,6 @@ void optimal_demo(void);
 void lfu_demo(void);
 void belady_anomaly_demo(void);
 void thrashing_demo(void);
+void paging_compare_demo(void);
 
 #endif
