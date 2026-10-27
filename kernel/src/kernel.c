@@ -208,6 +208,7 @@ static void parse_request(void)
     handle_blood_request(group, units);
 }
 
+<<<<<<< HEAD
 
 #define MAX_PROCESSES 16
 #define PROCESS_NAME_SIZE 24
@@ -503,9 +504,17 @@ static void show_help(void)
     print("------------------------------------------------------------\n");
     print(" DISK SCHEDULING\n");
     print(" disk - Run FCFS disk scheduling\n");
-    print("------------------------------------------------------------\n");
-    print(" NOTE: Scheduling, memory and disk are simulations.\n");
-    print("============================================================\n");
+}
+static void show_help(void)
+{
+    print("\nAvailable commands:\n");
+    print("  help    - List commands\n");
+    print("  clear   - Clear terminal\n");
+    print("  about   - About RaktSetu Mini OS\n");
+    print("  status  - Kernel status\n");
+    print("  blood   - Show blood inventory\n");
+    print("  request - Request blood: request GROUP UNITS\n");
+>>>>>>> upstream/main
 }
 
 static void execute_command(void)
@@ -528,6 +537,7 @@ static void execute_command(void)
         print("\nKeyboard: PS/2 polling enabled");
         print("\nBlood inventory: INITIALIZED");
         print("\nProcess scheduler: NOT INITIALIZED\n");
+<<<<<<< HEAD
     } else if (equals(input, "mem")) {
         show_memory();
     } else if (equals(input, "mem reset")) {
@@ -554,6 +564,10 @@ static void execute_command(void)
                input[6] == 'd' && input[7] == 'd' &&
                input[8] == ' ') {
         parse_proc_add();
+
+    } else if (equals(input, "blood")) {
+        show_blood();
+
     } else if (input_length >= 8 &&
                input[0] == 'r' && input[1] == 'e' &&
                input[2] == 'q' && input[3] == 'u' &&
@@ -604,6 +618,7 @@ void kernel_main(void)
             continue;
         }
 
+
         /* Handle spacebar explicitly and store it in the command. */
         if (code == 0x39) {
             if (input_length < INPUT_SIZE - 1) {
@@ -615,6 +630,14 @@ void kernel_main(void)
 
         char c = scancode_to_ascii(code);
         if (c == 0) {
+        char c = scancode_to_ascii(code);
+        if (c == 0) {
+            continue;
+        }
+
+        if (code == 0x39) {
+            put_char('_');
+
             continue;
         }
 
@@ -631,4 +654,5 @@ void kernel_main(void)
             put_char(c);
         }
     }
+}
 }
